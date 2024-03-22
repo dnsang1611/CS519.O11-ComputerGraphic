@@ -1,5 +1,3 @@
-kjhadkjfhksdfkj
-
 import * as THREE from 'three';
 import {BoxObstacle, SphereObstacle, ConeObstacle, CylinderObstacle} from './Obstacles.js'
 import {Coin, Teapot} from './Items.js'
