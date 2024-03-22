@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS105.O21 - Fake Subway Surfer</title>
+    <link rel="stylesheet" href="src/styles/main.css">
+</head>
+<body>
+    <canvas id="glcanvas" width="1024" height="800"></canvas>
+
+    <div id="ModalBox" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <p class='game_title'></p>
+            <p class="game_score" style="font-size: 20px"></p>
+            <div class="modal-footer" id="arrow" onmouseover="" style="cursor:pointer;"></div>
+            <p class="play_again" id="play_again" onmouseover="" style="font-size: 25px;cursor:pointer;margin-left: 29%;"></p>
+          </div>
+        </div>
+    </div>
+    
+    <div id="GameScore" class="score">
+        <div class="score_content">
+          <div class="score_box">
+            <h1>Score</h2>
+              <h2 class="score_gain"></h2>
+          </div>
+        </div>
+    </div>
+</body>
+
+<script src="src/js/main.js" type="module"></script>
+<script src="https://threejs.org/build/three.js"></script>
+</html>
