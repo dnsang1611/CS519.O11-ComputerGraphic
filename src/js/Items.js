@@ -1,6 +1,4 @@
 import * as THREE from 'three';
-import { TeapotGeometry } from './TeapotGeometry.js';
-
 
 export class Coin extends THREE.Mesh {
     constructor (radius, height, posX, posZ, velocity, color=0xffff00) {

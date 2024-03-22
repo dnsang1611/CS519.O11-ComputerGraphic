@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {BoxObstacle, SphereObstacle, ConeObstacle, CylinderObstacle} from './obstacles.js'
+import {BoxObstacle, SphereObstacle, ConeObstacle, CylinderObstacle} from './Obstacles.js'
 import {Coin, Teapot} from './Items.js'
 import { Ground } from './Ground.js';
 import {CharacterController} from './CharacterController.js'

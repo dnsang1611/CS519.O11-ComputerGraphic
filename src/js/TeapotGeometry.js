@@ -1,5 +1,3 @@
-import * as THREE from 'three';
-
 ( function () {
 
 	/**
@@ -330,5 +328,4 @@ import * as THREE from 'three';
 	}
 
 	THREE.TeapotGeometry = TeapotGeometry;
-
 } )();
