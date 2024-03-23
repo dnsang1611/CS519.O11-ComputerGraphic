@@ -26,7 +26,7 @@ export class CharacterController {
         this.velocityY = 0;
         this.velocityX = 0.2;
 
-        this.fadeDuration = 0.05;
+        this.fadeDuration = 0.2;
 
         this.isStoppable = true;
 
