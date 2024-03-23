@@ -28,6 +28,8 @@ export class CharacterController {
 
         this.fadeDuration = 0.05;
 
+        this.isStoppable = true;
+
         this.updateSides();
     }
 
@@ -39,7 +41,8 @@ export class CharacterController {
             var directionVector = globalVertex.sub(this.bbox.position);
 
             var ray = new THREE.Raycaster(this.bbox.position, directionVector.clone().normalize());
-            var collisionResults = ray.intersectObjects( obstacles );
+
+            var collisionResults = ray.intersectObjects(obstacles.map((obs) => obs.body));
 
             if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length())
                 return true;
@@ -52,12 +55,8 @@ export class CharacterController {
         const xCollision = this.right >= item.left && this.left <= item.right;
         const yCollision = this.top >= item.bottom && this.bottom <= item.top;
         const zCollision = this.front >= item.back && this.back <= item.front;
-        
-        return (xCollision && yCollision && zCollision);
-    }
 
-    checkBeFallen (ground) {
-        return (this.left > ground.right || this.right < ground.left);
+        return (xCollision && yCollision && zCollision);
     }
 
     updateSides () {
@@ -81,13 +80,31 @@ export class CharacterController {
         return this.bbox.geometry.parameters.depth;
     }
 
+    updateCamera () {
+        this.camera.position.set(
+            this.bbox.position.x,
+            this.bbox.position.y + 7,
+            this.bbox.position.z - 7,
+        )
 
-    update (delta, keyboard) {
-        // Left - A
-        if (keyboard[65]) this.bbox.position.x += this.velocityX;
+        this.camera.lookAt(new THREE.Vector3(
+            this.bbox.position.x,
+            this.bbox.position.y,
+            this.bbox.position.z + 5,
+        ));
+    }
 
-        // Right - D
-        if (keyboard[68]) this.bbox.position.x -= this.velocityX;
+    update (delta, keyboard, ground) {
+        // Right side corresponds to direction of x axis, not right side of the character
+        // Left - A, i.e, character moves torward the right side
+        const newRight = this.bbox.position.x + this.velocityX + this.getWidth() / 2;
+        if (keyboard[65] && newRight <= ground.right) this.bbox.position.x += this.velocityX;
+        // if (keyboard[65]) this.bbox.position.x += this.velocityX;
+
+        // Right - D, i.e, character moves torward the left side
+        const newLeft = this.bbox.position.x - this.velocityX - this.getWidth() / 2
+        if (keyboard[68] && newLeft >= ground.left) this.bbox.position.x -= this.velocityX;
+        // if (keyboard[68]) this.bbox.position.x -= this.velocityX;
 
         // down letter S
         let play;
@@ -109,7 +126,7 @@ export class CharacterController {
             this.canJump = false;
             this.velocityY = 7;
         }
-        
+
         this.bbox.position.y += this.velocityY * 2 * delta;
 
         if(!this.canJump){
@@ -155,5 +172,6 @@ export class CharacterController {
 
         // Update sides
         this.updateSides();
+        this.updateCamera();
     }
 }

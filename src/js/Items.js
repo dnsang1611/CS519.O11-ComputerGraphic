@@ -1,28 +1,33 @@
 import * as THREE from 'three';
 import { TeapotGeometry } from '../js/TeapotGeometry';
 
-export class Coin extends THREE.Mesh {
-    constructor (radius, height, posX, posZ, velocity, color=0xffff00) {
+import sunTexture from '../imgs/sun.jpg';
+
+const textureLoader = new THREE.TextureLoader();
+
+class Ring extends THREE.Mesh {
+    constructor (radius, tube, posX, posY, posZ, velocity, color=0xffff00) {
         super(
-            new THREE.CylinderGeometry(radius, radius, height, 30, true),
+            new THREE.TorusGeometry(radius, tube, 30),
             new THREE.MeshPhongMaterial({ color: color })
         );
 
         this.radius = radius;
+        this.tube = tube;
+        this.outRadius = radius + tube;
 
-        this.position.set(posX, 1.5, posZ);
-        this.rotateX(- Math.PI * 0.5);
+        this.position.set(posX, posY, posZ);
 
         this.velocity = velocity;
     }
 
     updateSides () {
-        this.front = this.position.z + this.radius / 2;
-        this.back = this.position.z - this.radius / 2;
-        this.right = this.position.x + this.radius / 2;
-        this.left = this.position.x - this.radius / 2;
-        this.top = this.position.y + this.radius / 2;
-        this.bottom = this.position.y - this.radius / 2;
+        this.front = this.position.z + this.outRadius / 2;
+        this.back = this.position.z - this.outRadius / 2;
+        this.right = this.position.x + this.outRadius / 2;
+        this.left = this.position.x - this.outRadius / 2;
+        this.top = this.position.y + this.outRadius / 2;
+        this.bottom = this.position.y - this.outRadius / 2;
     }
 
     move() {
@@ -35,8 +40,8 @@ export class Coin extends THREE.Mesh {
 // 0.3, 0.3, 0.1
 // 0.5
 
-export class Teapot extends THREE.Mesh {
-    constructor (size, posX, posZ, velocity) {
+class Teapot extends THREE.Mesh {
+    constructor (size, posX, posY, posZ, velocity) {
         super(
             new THREE.TeapotGeometry(size),
             new THREE.MeshStandardMaterial({color: 'green'})
@@ -44,7 +49,7 @@ export class Teapot extends THREE.Mesh {
 
         this.size = size;
 
-        this.position.set(posX, 1.5, posZ);
+        this.position.set(posX, posY, posZ);
 
         this.velocity = velocity;
 
@@ -65,3 +70,36 @@ export class Teapot extends THREE.Mesh {
         this.updateSides();
     }
 }
+
+class SuperPowerUnit extends THREE.Mesh {
+    constructor (radius, posX, posY, posZ, velocity) {
+        super(
+            new THREE.IcosahedronGeometry(radius),
+            new THREE.MeshBasicMaterial({map: textureLoader.load(sunTexture)})
+        )
+
+        this.radius = radius;
+
+        this.position.set(posX, posY, posZ);
+
+        this.velocity = velocity;
+
+        this.updateSides();
+    }
+
+    updateSides () {
+        this.front = this.position.z + this.radius;
+        this.back = this.position.z - this.radius;
+        this.right = this.position.x + this.radius;
+        this.left = this.position.x - this.radius;
+        this.top = this.position.y + this.radius;
+        this.bottom = this.position.y - this.radius;
+    }
+
+    move() {
+        this.position.z -= this.velocity;
+        this.updateSides();
+    }
+}
+
+export { Ring, Teapot, SuperPowerUnit }
