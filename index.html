@@ -7,26 +7,21 @@
     <link rel="stylesheet" href="src/styles/main.css">
 </head>
 <body>
-    <canvas id="glcanvas" width="1024" height="800"></canvas>
+    <canvas id="glcanvas"></canvas>
 
-    <div id="ModalBox" class="modal">
+    <div class="modal-box">
         <div class="modal-content">
           <div class="modal-header">
-            <p class='game_title'></p>
-            <p class="game_score" style="font-size: 20px"></p>
-            <div class="modal-footer" id="arrow" onmouseover="" style="cursor:pointer;"></div>
-            <p class="play_again" id="play_again" onmouseover="" style="font-size: 25px;cursor:pointer;margin-left: 29%;"></p>
+            <p class='game_title'>Subway Surfer Fake</p>
+            <p class="game_score"></p>
+            <div class="start-button" onmouseover=""></div>
+            <p class="restart-button" onmouseover=""></p>
           </div>
         </div>
     </div>
     
-    <div id="GameScore" class="score">
-        <div class="score_content">
-          <div class="score_box">
-            <h1>Score</h2>
-              <h2 class="score_gain"></h2>
-          </div>
-        </div>
+    <div class="score-box">
+        <h1>SCORES: <span class="score-content">0</span></h1>
     </div>
 </body>
 
