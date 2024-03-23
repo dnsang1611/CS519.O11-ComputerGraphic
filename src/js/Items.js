@@ -102,4 +102,4 @@ class SuperPowerUnit extends THREE.Mesh {
     }
 }
 
-export { Ring, Teapot, SuperPowerUnit }
+export { Ring, Teapot, SuperPowerUnit };
