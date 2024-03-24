@@ -87,7 +87,6 @@ body {
 .modal-header p {
     text-align: center;
     font-weight: bold;
-    color: black;
     font-size: 2em;
     margin: 0;
     padding: 2.5% 5% 2.5% 5%;
@@ -95,15 +94,13 @@ body {
 
 .start-button {
     cursor: pointer;
-    border-top: 25px solid transparent;
-    border-left: 50px solid black;
-    border-bottom: 25px solid transparent;
-    margin-left: 42%;
+    color: #f70303;
 }
 
 .restart-button {
     cursor: pointer;
-    margin: 0;
+    display: none;
+    color: #f70303;
 }
 
 .game_score {
