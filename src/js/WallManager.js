@@ -11,7 +11,7 @@ class WallManager {
             {value: "sphere", weight: 3},
             {value: "cone", weight: 3},
             {value: "teapot", weight: 0.5},
-            {value: "superpower", weight: 0.5},
+            {value: "superpower", weight: 100},
         ];
 
         this.invalidZ = -20;

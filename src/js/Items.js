@@ -32,7 +32,7 @@ class Ring extends THREE.Mesh {
 
     move() {
         this.updateSides();
-        this.rotateZ(this.velocity);
+        this.rotateY(this.velocity);
         this.position.z -= this.velocity;
     }
 }

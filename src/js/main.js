@@ -18,6 +18,7 @@ var scoreFactor = 1;
 var gamestart = false;
 var gameOver = 0;
 var finish = 0;
+var isFirstPerson;
 
 const scoreSpan =  document.querySelector(".score-content")
 scoreSpan.innerHTML = score;
@@ -30,6 +31,10 @@ function startGame() {
 	gamestart = true;
 	modal.style.display = "none";
     document.querySelector(".score-box").style.display = "flex";
+
+    const povTag = document.querySelector(".point-of-view");
+    povTag.style.display = "flex";
+    isFirstPerson = povTag.value === "1" ? true : false;
 }
 
 function restartGame() {
@@ -56,7 +61,8 @@ function finishGame() {
 
 	w = document.querySelector(".restart-button");
 	w.style.display = "flex";
-	w.textContent = "Play Again";
+
+    document.querySelector(".point-of-view").style.display = "none";
 
     document.querySelector(".score-box").style.display = "none";
 }
@@ -74,7 +80,7 @@ const camera = new THREE.PerspectiveCamera(
 	75,
 	window.innerWidth / window.innerHeight,
 	0.1,
-	50
+	40
 );
 camera.position.set(0, 10, 10);
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -83,9 +89,9 @@ controls.enabled = false;
 const light = new THREE.DirectionalLight(0xffffff, 3);
 light.castShadow = true;
 light.position.set(8, 15, -20);
-light.shadow.camera.left = -15;
+light.shadow.camera.left = -35;
 light.shadow.camera.right = 6;
-light.shadow.camera.top = 20;
+light.shadow.camera.top = 40;
 light.shadow.camera.bottom = -6;
 scene.add(light);
 
@@ -115,9 +121,40 @@ scene.background = cubeTextureLoader.load([
 
 
 // ======================================== GROUND =======================================
-const ground = new Ground(12, 6, 75, 0, -3, 25);
+const ground = new Ground(12, 6, 100, 0, -3, 30);
 ground.receiveShadow = true;
 scene.add(ground);
+
+const dragon = {} // This is used for decorated
+
+new GLTFLoader().load((new URL("../assets/skeleton_dragon.glb", import.meta.url)).href, function (gltf) {
+    // Model
+    const model = gltf.scene;
+    model.traverse(function (object) {
+        if (object.isMesh) object.castShadow = true;
+    });
+    model.scale.set(80, 80, 80);
+
+    // Add model to bbox
+    model.position.y = -7;
+    model.position.z = 60;
+    model.rotateY(Math.PI);
+    scene.add(model);
+
+    // Animation controller
+    const gltfAnimation = gltf.animations;
+    const mixer = new THREE.AnimationMixer(model);
+
+    gltfAnimation.forEach((a) => {
+            if (a.name === "attack_5") {
+                mixer.clipAction(a).play();
+                console.log('update')
+            }
+    });
+
+    dragon.model = model;
+    dragon.mixer = mixer;
+});
 
 
 
@@ -173,7 +210,7 @@ new GLTFLoader().load(modelUrl.href, function (gltf) {
         bbox,
         mixer,
         animationsMap,
-        camera
+        camera,
     );
 });
 
@@ -214,7 +251,7 @@ function animate() {
 		// Character
 		if (characterController) {
 			// Update movement and animation of character
-			characterController.update(mixerUpdateDelta, keyboard, ground);
+			characterController.update(mixerUpdateDelta, keyboard, ground, isFirstPerson);
 
 			// Update movement of items and obstacles
 			wallManager.update();
@@ -233,18 +270,20 @@ function animate() {
 						console.log("Get Ring");
 
 					} else if (item instanceof Teapot) {
-                        // rings x 2 and be unstoppable for the next 3 walls
+                        // 2 x rings; line obstacles; increase far of camera; 
+                        // see the real enemy (dragon); time: 3 walls
                         // Set mode
                         wallManager.setMode('teapot');
-                        characterController.isStoppable = false;
+                        characterController.changeVision(1);
                         scoreFactor = 2;
                         timer = 3;
                     }
                     else if (item instanceof SuperPowerUnit) {
-                        // Set mode
-                        // rings x 3 and be unstoppable for the next 5 walls
+                        // 3 x rings; point obstacles; increase far of camera;
+                        // see the real enemy; unstoppable; time: 5 walls
                         // Set mode
                         wallManager.setMode('superpower');
+                        characterController.changeVision(1);
                         characterController.isStoppable = false;
                         scoreFactor = 3;
                         timer = 5;
@@ -261,6 +300,7 @@ function animate() {
                 if (timer > -1) {
                     if (timer == 0) {
                         wallManager.setMode(null);
+                        characterController.changeVision(0);
                         characterController.isStoppable = true;
                         scoreFactor = 1;
                         timer == -1;
@@ -274,6 +314,10 @@ function animate() {
 				frame_cnt = 0;
 			}
 		}
+
+        if (dragon.model) {
+            dragon.mixer.update(mixerUpdateDelta);
+        } 
 	} 
     else {
 		if (gameOver || finish) {

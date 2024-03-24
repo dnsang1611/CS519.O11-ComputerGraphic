@@ -26,7 +26,7 @@ export class CharacterController {
         this.velocityY = 0;
         this.velocityX = 0.2;
 
-        this.fadeDuration = 0.2;
+        this.fadeDuration = 0;
 
         this.isStoppable = true;
 
@@ -80,21 +80,41 @@ export class CharacterController {
         return this.bbox.geometry.parameters.depth;
     }
 
-    updateCamera () {
-        this.camera.position.set(
-            this.bbox.position.x,
-            this.bbox.position.y + 7,
-            this.bbox.position.z - 7,
-        )
-
-        this.camera.lookAt(new THREE.Vector3(
-            this.bbox.position.x,
-            this.bbox.position.y,
-            this.bbox.position.z + 5,
-        ));
+    changeVision (mode) {
+        this.camera.far = mode ? 80 : 40;
+        this.camera.updateProjectionMatrix();
     }
 
-    update (delta, keyboard, ground) {
+    updateCamera (isFirstPerson) {
+        if (isFirstPerson) {
+            this.camera.position.set(
+                this.bbox.position.x,
+                this.bbox.position.y + 2.75,
+                0.5,
+            )
+    
+            this.camera.lookAt(new THREE.Vector3(
+                this.bbox.position.x,
+                this.bbox.position.y + 1,
+                5,
+            ));
+        }
+        else {
+            this.camera.position.set(
+                this.bbox.position.x,
+                this.bbox.position.y + 7,
+                this.bbox.position.z - 7,
+            )
+
+            this.camera.lookAt(new THREE.Vector3(
+                this.bbox.position.x,
+                this.bbox.position.y,
+                this.bbox.position.z + 5,
+            ));
+        }
+    }
+
+    update (delta, keyboard, ground, isFirstPerson) {
         // Right side corresponds to direction of x axis, not right side of the character
         // Left - A, i.e, character moves torward the right side
         const newRight = this.bbox.position.x + this.velocityX + this.getWidth() / 2;
@@ -172,6 +192,6 @@ export class CharacterController {
 
         // Update sides
         this.updateSides();
-        this.updateCamera();
+        this.updateCamera(isFirstPerson);
     }
 }

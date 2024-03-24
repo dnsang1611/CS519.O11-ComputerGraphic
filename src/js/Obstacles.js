@@ -29,7 +29,6 @@ const defaultTextures = [
 
 const defaultColors = [
     0xffffff,
-    0x000000,
     0xff0000,
     0x00ff00,
     0x0000ff,
